@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+	{{>head}}
+	<body>
+		{{>nav}}
+		<div class="container">
+			<div class="row">
+				<div class="col-6 bg-infko mx-auto mt-5">
+					<form>
+						<div class="input-group mb-5">
+							<input type="text" id="city_name" class="form-control" placeholder="Enter Your City Name" aria-label="City Name" aria-describedby="button-addon2">
+							<button class="btn btn-info" type="submit" id="btn_search" value="search">Search</button>
+						</div>
+					</form>
+					<div class="col-9 mx-auto">
+						<div class="card">
+							<div class="card-body">
+								<div class="d-flex justify-content-between">
+									<p class="card-title" id="day"></p>
+									<p class="card-title" id="dm"></p>
+								</div>
+							
+								<div class="text-center my-5">
+									<h6 class="card-title" id="city">Please..! Enter City Name Before Search.</h6>
+									<h2><span id="temp"></span> <span id="temp_status"></span></h2>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		{{>footer}}
+
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script>
+			var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+			const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+			const now = new Date();
+			day.innerText = days[now.getDay()]; 
+			dm.innerText = `${now.getDate()}, ${months[now.getMonth()]}`;
+
+			const getWeatherInfo = async (event)=>{
+				event.preventDefault();
+				
+				if (city_name.value === "") {
+					city.innerText = "Please..! enter city name before search.";
+					temp.innerText = "";
+				} else {
+					const url = `https://api.openweathermap.org/data/2.5/weather?q=${city_name.value}&units=metric&appid=ac7c75b9937a495021393024d0a90c44`;
+					const response = await fetch(url);
+					const data = await response.json();	
+					
+					if (!data.name) {
+						city.innerText = "Please..! Enter Currect City Name.";
+						temp.innerText = "";
+						temp_status.innerHTML = "";
+					} else {
+						let weatherMood;
+						if (data.weather[0].main === "Clouds") {
+							weatherMood = "<i class='fa fa-cloud' style='color: skyblue'></i>";	
+						} else if(data.weather[0].main === "Smoke"){
+							weatherMood = "<span style='font-size:30px;'>&#127787;</span>";	
+						} else if(data.weather[0].main === "Haze"){
+							weatherMood = "<span style='font-size:30px;'>&#127781;</span>";	
+						}else if(data.weather[0].main === "Rain"){
+							weatherMood = "<span style='font-size:30px;'>&#127783;</span>";	
+						}else{
+							weatherMood = "<i class='fa fa-sun-o' style='color: Gold'></i>";	
+						}
+
+						city.innerText = `${data.name}, ${data.sys.country}`;
+						temp.innerText = `${data.main.temp}°C`;
+						temp_status.innerHTML = weatherMood;
+					}
+
+
+					
+					
+				}	
+
+			}
+			document.getElementById("btn_search").addEventListener("click", getWeatherInfo);
+		</script>
+	</body>
+</html>
