@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const hbs = require("hbs");
+const port = process.env.PORT || 8000;
 
 // public static path
 const staticPath = path.join(__dirname, "../public");
@@ -31,6 +32,6 @@ app.get("*", (req, res) => {
 	res.render("404", { title: "404" });
 });
 
-app.listen(8000, () => {
-	console.log("Listning From The 8000");
+app.listen(port, () => {
+	console.log(`Listning From The ${port}`);
 });
